@@ -18,24 +18,20 @@
 
 ## 📌 Overview
 
-TLS/SSL configuration & certificate auditor
+
+OTLSScan is a TLS/SSL configuration and certificate auditor that probes the handshake, enumerates protocols and ciphers, and decodes the X.509 chain with a pure-stdlib ASN.1 parser. It builds a protocol support matrix from SSLv3 to TLS 1.3, flags weak ciphers, checks HSTS and redirects, and produces a weighted A+ to F grade. It offers Mozilla modern/intermediate/old remediation snippets for Nginx, Apache, Caddy, HAProxy and Lighttpd, plus threaded batch scanning.
 
 ---
 
 ## ✨ Features
 
-- TLS handshake probe — negotiated protocol, cipher, key-exchange bits, ALPN (h2/http1.1), compression, session-ticket / session-reuse hints, RTT timing
-- Protocol support matrix — SSLv3 → TLS 1.3 using pinned min/max contexts (stdlib) with optional openssl s_client fallback for legacy protocols
-- Cipher enumeration — per-suite TLS 1.2 handshake probes against the local OpenSSL cipher list, server-preference detection, forward-secrecy ratio
-- Pure-stdlib DER/ASN.1 X.509 decoder — subject, issuer, SAN, validity, key type/size, EC curve, signature algorithm, basic constraints, key usage, EKU, AIA/OCSP, CRL DP, SCT presence, must-staple
-- Chain analysis — order, self-signed root sent, intermediate expiry, weak signature in chain
-- Weak cipher heuristics (NULL/EXPORT/RC4/3DES/DES/ CBC-SHA1/anon/PSK/SRP/CAMELLIA/IDEA/SEED/MD5) plus offline `openssl ciphers -v` paste analyser
-- HSTS / HTTP→HTTPS redirect cross-check (urllib)
-- Weighted A+…F grade engine with caps & subscores
-- Remediation — Mozilla modern/intermediate/old profiles for Nginx, Apache, Caddy, HAProxy, Lighttpd
-- Threaded batch scan of host:port lists + summary
-- Export TXT / CSV / JSON, clipboard, ~/OTLSScan
-- Full CLI mode (-t host[:port], --batch, --json ...)
+
+- Handshake probe (negotiated protocol, cipher, key-exchange bits, ALPN, session reuse, RTT)
+- Protocol support matrix SSLv3 to TLS 1.3 with optional openssl s_client fallback for legacy protocols
+- Per-suite cipher enumeration with server-preference and forward-secrecy ratio
+- Pure-stdlib X.509 decoder (subject, SAN, validity, key size, EC curve, signature alg, EKU, OCSP, SCT)
+- Weak-cipher heuristics, chain analysis, HSTS/redirect cross-check and offline PEM / openssl-ciphers analysis
+- Weighted A+..F grade, Mozilla remediation profiles for 5 servers and threaded batch scanning
 
 ---
 
@@ -48,8 +44,13 @@ TLS/SSL configuration & certificate auditor
 
 ## 🚀 Usage
 
+
 ```bash
-./OTLSScan
+./OTLSScan -t example.com:443
+./OTLSScan --batch hosts.txt --format csv -o tls.csv --workers 8
+./OTLSScan -t example.com --protocols --cert
+./OTLSScan --pem server.pem --host example.com
+./OTLSScan --help
 ```
 
 ---
